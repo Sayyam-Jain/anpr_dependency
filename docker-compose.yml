@@ -1,0 +1,29 @@
+# docker-compose run --rm anpr
+version: "2.3"
+services: 
+    anpr:
+        # image: sayyam/alpr_dependency:20.07.1
+        image: sayyam/alpr_dependency:vpf
+        environment:
+          - "DISPLAY"
+        working_dir: /app/
+        volumes:
+          - /tmp/.X11-unix/:/tmp/.X11-unix/
+          - /home/$USER/Documents/config:/app/config/
+          - /media/data/toll_alpr/ALPR/:/app/ 
+          - /media/data/Ajmer_Video/CMS/recording/:/app/recording/
+          - /media/data/Ajmer_Video/CMS/Recordings/:/app/Recordings/
+          - /media/data/toll_alpr/weights/V4_alpr_avc/:/app/weights/
+          - /media/chetan/Backup Plus/Samajh AI/Piplaz Toll/Recordings/ANPR recordings/October/09:/videos/
+          # - /media/chetan/Backup_Plus/Pipalaz_toll/Recordings/ANPR_Recordings/27_sept_8am_4pm:/alpr/Recordings
+          # - /home/chetan/Documents/:/alpr/Documents/
+          - /etc/localtime/:/etc/localtime/
+        runtime: nvidia
+        networks:
+          - mainnet
+        # stdin_open: true # docker run -i
+        # tty: true
+        # command: python main_ldbc.py
+        # command: /bin/bash
+networks:
+    mainnet:
