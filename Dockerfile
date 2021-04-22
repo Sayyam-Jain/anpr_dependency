@@ -1,9 +1,10 @@
 FROM nvcr.io/nvidia/tensorrt:20.09-py3
+
 ENV DEBIAN_FRONTEND=noninteractive
 
-WORKDIR /app
+WORKDIR /vpf_app
 
-RUN sed -i 's/archive.ubuntu.com/in.archive.ubuntu.com/g' /etc/apt/sources.list
+# RUN sed -i 's/archive.ubuntu.com/in.archive.ubuntu.com/g' /etc/apt/sources.list
 
 RUN apt update
 
@@ -29,20 +30,23 @@ RUN cd vpf && unzip Video_Codec_SDK_11.0.10.zip && \
     mkdir -p build && cd build && \
     cmake .. \
         -DFFMPEG_DIR:PATH="/usr/bin/ffmpeg" \
-        -DVIDEO_CODEC_SDK_DIR:PATH="/app/vpf/Video_Codec_SDK_11.0.10" \
+        -DVIDEO_CODEC_SDK_DIR:PATH="/vpf_app/vpf/Video_Codec_SDK_11.0.10" \
         -DGENERATE_PYTHON_BINDINGS:BOOL="1" \
         -DGENERATE_PYTORCH_EXTENSION:BOOL="0" \
         -DPYTHON_LIBRARY=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/libpython3.6m.so \
         -DPYTHON_EXECUTABLE="/usr/bin/python3.6" .. \
-        -DCMAKE_INSTALL_PREFIX:PATH="/app" && \
+        -DCMAKE_INSTALL_PREFIX:PATH="/vpf_app" && \
     make -j$(nproc) && make install && \
-    cd /app && \
+    cd /vpf_app && \
     rm -rf vpf && \
     mv bin/*.so . && rm -rf bin
 
-ENV LD_LIBRARY_PATH=/app:${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=/vpf_app:${LD_LIBRARY_PATH}
 
-# Add decode script
+COPY requirements.txt .
+
 RUN pip install -r requirements.txt
+
+RUN rm -rf requirements.txt
 
 CMD ["bash"]
