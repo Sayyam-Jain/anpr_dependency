@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/tensorrt:20.09-py3
+FROM nvcr.io/nvidia/tensorrt:21.05-py3
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -8,7 +8,7 @@ WORKDIR /vpf_app
 
 RUN apt update
 
-RUN apt install -y git cmake wget unzip ffmpeg virtualenv build-essential pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libswresample-dev libavfilter-dev libsm6 libxext6 libxrender-dev yasm libtool libc6 libc6-dev libnuma1 libnuma-dev libgl1-mesa-glx x264 libx264-dev
+RUN apt install -y git cmake wget unzip ffmpeg virtualenv build-essential pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libswresample-dev libavfilter-dev libsm6 libxext6 libxrender-dev libtool libc6 libc6-dev libnuma1 libnuma-dev libgl1-mesa-glx x264 libx264-dev
 
 # Install PyAV with bitstream support
 RUN git clone https://github.com/PyAV-Org/PyAV.git
@@ -33,8 +33,8 @@ RUN cd vpf && unzip Video_Codec_SDK_11.0.10.zip && \
         -DVIDEO_CODEC_SDK_DIR:PATH="/vpf_app/vpf/Video_Codec_SDK_11.0.10" \
         -DGENERATE_PYTHON_BINDINGS:BOOL="1" \
         -DGENERATE_PYTORCH_EXTENSION:BOOL="0" \
-        -DPYTHON_LIBRARY=/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/libpython3.6m.so \
-        -DPYTHON_EXECUTABLE="/usr/bin/python3.6" .. \
+        -DPYTHON_LIBRARY=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so \
+        -DPYTHON_EXECUTABLE="/usr/bin/python3.8" .. \
         -DCMAKE_INSTALL_PREFIX:PATH="/vpf_app" && \
     make -j$(nproc) && make install && \
     cd /vpf_app && \
@@ -48,5 +48,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 RUN rm -rf requirements.txt
+
+RUN pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
 
 CMD ["bash"]
