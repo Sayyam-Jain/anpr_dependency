@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/tensorrt:21.05-py3
+FROM nvcr.io/nvidia/tensorrt:20.12-py3
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -45,12 +45,12 @@ RUN cd vpf && unzip Video_Codec_SDK_11.0.10.zip && \
 
 ENV LD_LIBRARY_PATH=/vpf_app:${LD_LIBRARY_PATH}
 
+RUN pip3 install --no-cache-dir torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 RUN rm -rf requirements.txt
-
-RUN pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
 
 CMD ["bash"]

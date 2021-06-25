@@ -1,7 +1,6 @@
-torchvision==0.6.1
-opencv-python
 onnxruntime
 opencv-python
 requests
 pandas
 natsort
+cryptography
