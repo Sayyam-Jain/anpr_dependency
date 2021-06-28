@@ -10,6 +10,14 @@ RUN apt update
 
 RUN apt install -y git cmake wget unzip ffmpeg virtualenv build-essential pkg-config libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libswresample-dev libavfilter-dev libsm6 libxext6 libxrender-dev libtool libc6 libc6-dev libnuma1 libnuma-dev libgl1-mesa-glx x264 libx264-dev
 
+RUN pip3 install --no-cache-dir torch==1.8.1+cu111 torchvision==0.9.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+
+COPY requirements.txt .
+
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+RUN rm -rf requirements.txt
+
 # Install PyAV with bitstream support
 RUN git clone https://github.com/PyAV-Org/PyAV.git
 
@@ -44,13 +52,5 @@ RUN cd vpf && unzip Video_Codec_SDK_11.0.10.zip && \
     mv bin/*.so . && rm -rf bin
 
 ENV LD_LIBRARY_PATH=/vpf_app:${LD_LIBRARY_PATH}
-
-RUN pip3 install --no-cache-dir torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
-
-COPY requirements.txt .
-
-RUN pip3 install --no-cache-dir -r requirements.txt
-
-RUN rm -rf requirements.txt
 
 CMD ["bash"]
