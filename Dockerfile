@@ -30,7 +30,8 @@ RUN cd PyAV && pip3 install .
 # Install VPF
 # RUN git clone https://github.com/NVIDIA/VideoProcessingFramework.git vpf
 
-RUN git clone -b gil_release_support https://github.com/NVIDIA/VideoProcessingFramework.git vpf
+# RUN git clone -b gil_release_support https://github.com/NVIDIA/VideoProcessingFramework.git vpf
+RUN git clone  https://github.com/NVIDIA/VideoProcessingFramework.git vpf
 
 ADD Video_Codec_SDK_11.1.5.zip ./vpf
 
