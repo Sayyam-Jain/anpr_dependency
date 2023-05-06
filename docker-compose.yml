@@ -6,6 +6,7 @@ services:
         image: sayyam/alpr_dependency:vpf
         environment:
           - "DISPLAY"
+          - NVIDIA_DRIVER_CAPABILITIES=video,compute,utility
         working_dir: /app/
         volumes:
           - /tmp/.X11-unix/:/tmp/.X11-unix/

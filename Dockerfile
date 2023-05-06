@@ -30,7 +30,7 @@ ENV LANG C.UTF-8
 RUN echo "C.UTF-8 UTF-8" >> /etc/locale.gen
 RUN locale-gen
 
-RUN pip3 install --upgrade pip3
+RUN pip3 install --upgrade pip
 
 RUN pip3 install --no-cache-dir torch torchvision
 
@@ -61,19 +61,20 @@ ENV CUDACXX /usr/local/cuda/bin/nvcc
 
 # RUN cd vpf && git checkout f196c99e2e0c918c7b3b780344cb8e75c6654cf0 && unzip Video_Codec_SDK_11.1.5.zip && \
 RUN cd vpf && unzip Video_Codec_SDK_12.0.16.zip && \
-    mkdir -p build && cd build && \
-    cmake .. \
-        -DFFMPEG_DIR:PATH="/usr/bin/ffmpeg" \
-        -DVIDEO_CODEC_SDK_DIR:PATH="/vpf_app/vpf/Video_Codec_SDK_12.0.16" \
-        -DGENERATE_PYTHON_BINDINGS:BOOL="1" \
-        -DGENERATE_PYTORCH_EXTENSION:BOOL="0" \
-        -DPYTHON_LIBRARY=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so \
-        -DPYTHON_EXECUTABLE="/usr/bin/python3.8" .. \
-        -DCMAKE_INSTALL_PREFIX:PATH="/vpf_app" && \
-    make -j$(nproc) && make install && \
-    cd /vpf_app && \
-    rm -rf vpf && \
-    mv bin/*.so . && rm -rf bin
+    pip3 install .
+    # mkdir -p build && cd build && \
+    # cmake .. \
+    #     -DFFMPEG_DIR:PATH="/usr/bin/ffmpeg" \
+    #     -DVIDEO_CODEC_SDK_DIR:PATH="/vpf_app/vpf/Video_Codec_SDK_12.0.16" \
+    #     -DGENERATE_PYTHON_BINDINGS:BOOL="1" \
+    #     -DGENERATE_PYTORCH_EXTENSION:BOOL="0" \
+    #     -DPYTHON_LIBRARY=/usr/lib/python3.8/config-3.8-x86_64-linux-gnu/libpython3.8.so \
+    #     -DPYTHON_EXECUTABLE="/usr/bin/python3.8" .. \
+    #     -DCMAKE_INSTALL_PREFIX:PATH="/vpf_app" && \
+    # make -j$(nproc) && make install && \
+    # cd /vpf_app && \
+    # rm -rf vpf && \
+    # mv bin/*.so . && rm -rf bin
 
 ENV LD_LIBRARY_PATH=/vpf_app:${LD_LIBRARY_PATH}
 
