@@ -7,7 +7,7 @@ ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
 ARG FFMPEG_VERSION=6.0
 ARG OPENCV_VERSION="4.7.0"
-ARG BASE_DIR='/installs'
+ARG BASE_DIR='/workspace/'
 ARG CUDA_ARCH_BIN="5.3,6.2,7.2,8.7"
 ARG ENABLE_NEON="OFF"
 ARG FFMPEG_DIR=${BASE_DIR}'/ffmpeg/'
@@ -104,8 +104,9 @@ RUN apt-get install -y --no-install-recommends \
 
 
 
-# Installing GPU support for ffmpeg
-RUN mkdir -p $FFMPEG_DIR && cd $FFMPEG_DIR
+# # Installing GPU support for ffmpeg
+RUN mkdir -p $FFMPEG_DIR 
+WORKDIR ${FFMPEG_DIR}
 RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git 
 RUN cd nv-codec-headers && make install && cd -
 
@@ -119,12 +120,17 @@ ENV LANG C.UTF-8
 RUN echo "C.UTF-8 UTF-8" >> /etc/locale.gen
 RUN locale-gen
 # RUN rm -rf $FFMPEG_DIR
+
+
+
 RUN ln -s /usr/include/$(uname -i)-linux-gnu/cudnn_version_v8.h /usr/include/$(uname -i)-linux-gnu/cudnn_version.h
 
 
 
 # clone and configure OpenCV repo
-# RUN mkdir -p ${OPENCV_DIR} && cd ${OPENCV_DIR}
+RUN mkdir -p $OPENCV_DIR
+WORKDIR $OPENCV_DIR
+RUN echo "Curent Dir: $PWD"
 RUN git clone --depth 1 --branch ${OPENCV_VERSION} https://github.com/opencv/opencv.git && \
     git clone --depth 1 --branch ${OPENCV_VERSION} https://github.com/opencv/opencv_contrib.git && \
     cd opencv && \
@@ -148,7 +154,7 @@ RUN git clone --depth 1 --branch ${OPENCV_VERSION} https://github.com/opencv/ope
         -D ENABLE_NEON=${ENABLE_NEON} \
         -D OPENCV_DNN_CUDA=ON \
         -D OPENCV_ENABLE_NONFREE=ON \
-        -D OPENCV_EXTRA_MODULES_PATH=${BASE_DIR}/opencv_contrib/modules \
+        -D OPENCV_EXTRA_MODULES_PATH=${OPENCV_DIR}/opencv_contrib/modules \
         -D OPENCV_GENERATE_PKGCONFIG=ON \
         -D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
         -D WITH_CUBLAS=ON \
@@ -183,7 +189,10 @@ ADD Video_Codec_SDK_12.1.14.zip $VPF_DIR
 ENV CUDACXX /usr/local/cuda/bin/nvcc
 RUN cd $VPF_DIR && unzip Video_Codec_SDK_12.1.14.zip && \
     pip3 install . && pip install src/PytorchNvCodec
-# RUN rm -rf $VPF_DIR
+
+
+RUN rm -rf ${BASE_DIR}
+WORKDIR '/'
 # ENV LD_LIBRARY_PATH=/vpf_app:${LD_LIBRARY_PATH}
 CMD ["bash"]
 

@@ -1,5 +1,4 @@
 onnxruntime
-opencv-python
 requests
 pandas
 natsort
@@ -13,6 +12,6 @@ numba
 lmdb
 scikit-image
 onnx==1.8.0
-# cupy
+cupy
 onnx-simplifier
-# git+https://github.com/lilohuang/PyTurboJPEG.git
+git+https://github.com/lilohuang/PyTurboJPEG.git
